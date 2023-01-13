@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-&u2pwjq#cr*1rmhlw406$d-(927md(+-^g4$xy^oi&j(liuq!7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -64,6 +67,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ]
 }
+
+# AUTHENTICATION_BACKENDS = [
+#     'EmailBackend.EmailBackend',
+# ]
+
+# AUTH_USER_MODEL = "base.models.User"
 
 ROOT_URLCONF = 'learn_py.urls'
 
