@@ -68,9 +68,9 @@ REST_FRAMEWORK = {
     ]
 }
 
-# AUTHENTICATION_BACKENDS = [
-#     'EmailBackend.EmailBackend',
-# ]
+AUTHENTICATION_BACKENDS = [
+    'EmailBackend.EmailBackend',
+]
 
 # AUTH_USER_MODEL = "base.models.User"
 

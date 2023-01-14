@@ -1,8 +1,10 @@
 from django.urls import path
-from . import views
+from . import auth, cars
 
 urlpatterns = [
-    # path('', views.get_data),
-    path('add', views.add_user),
-    path('login', views.auth_user),
+    path('data', auth.get_data),
+    path('add', auth.add_user),
+    path('login', auth.auth_user),
+    path('cars/view', cars.get_cars),
+    path('cars/add', cars.add_car),
 ]
