@@ -60,7 +60,6 @@ def add_user(request):
                 "error": errors
             }
             return Response(res, status=status.HTTP_400_BAD_REQUEST)
-
     except Exception as e:
         res = {
             "message": "an error occured",
@@ -76,7 +75,6 @@ def auth_user(request):
     is_valid = serialized.is_valid()
     errors = serialized.errors
     try:
-        username = request.data.get('username')
         email = request.data.get('email')
         password = request.data.get('password')
         if email is None or password is None:
@@ -111,7 +109,6 @@ def auth_user(request):
                 "error": errors
             }
             return Response(res, status=status.HTTP_400_BAD_REQUEST)
-
     except Exception as e:
         res = {
             "message": "an error occured",
@@ -124,13 +121,11 @@ def get_data(request):
     authenticated = TokenAuthentication().authenticate(request=request)
     logged_in = authenticated[0]
     user = UserSerializer_Authed(logged_in)
-    user_id = user.data.get('id')
     try:
         res = {
             "data": user.data
         }
         return Response(res, status=status.HTTP_200_OK)
-
     except Exception as e:
         res = {
             "message": "an error occured",
@@ -163,7 +158,6 @@ def get_user(request):
                 "data": search_result.data
             }
             return Response(res, status=status.HTTP_200_OK)
-
     except Exception as e:
         res = {
             "message": "an error occured",

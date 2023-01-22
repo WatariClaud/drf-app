@@ -1,10 +1,8 @@
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.authtoken.admin import Token
 from rest_framework.decorators import api_view
-from django.contrib.auth.models import User
-from .serializers import CarSerializer_View, UserSerializer_Authed, BookingSerializer_Add, BookingSerializer_Update, BookingSerializer_View
+from .serializers import CarSerializer_View, UserSerializer_Authed
 from base.models import Car, Booking
 
 @api_view(['POST'])
@@ -35,13 +33,11 @@ def make_booking(request, car_id):
         if description is None or not description and description == '':
             description = user_name + ' booked car number ' + str(car_id)
         booking = Booking.objects.create(car_id=car_id, user_id=user_id, description=description, paid=False, returned=False, collected=False)
-        print('three')
         res = {
             "message": "Booked successfully",
             "booking_id": booking.pk
         }
         return Response(res, status=status.HTTP_201_CREATED)
-        
     except Exception as e:
         res = {
             "message": "an error occured",

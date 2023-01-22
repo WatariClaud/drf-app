@@ -1,9 +1,7 @@
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.authtoken.admin import Token
 from rest_framework.decorators import api_view
-from django.contrib.auth.models import User
 from .serializers import CarSerializer_Add, CarSerializer_View_Self, CarSerializer_View, UserSerializer_Authed
 from base.models import Car
 
@@ -125,7 +123,6 @@ def search_by_model(request):
             "data": cars.data
         }
         return Response(res, status=status.HTTP_200_OK)
-        
     except Exception as e:
         res = {
             "message": "an error occured",
