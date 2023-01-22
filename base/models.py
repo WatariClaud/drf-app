@@ -2,8 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class User(models.Model):
-    USERNAME_FIELD = 'email'
+class User (models.Model):
     name = models.CharField(max_length=50, null=False)
     email = models.EmailField(max_length=50, null=False, unique=True)
     password = models.TextField(null=False)
@@ -16,5 +15,16 @@ class Car(models.Model):
     hire = models.BooleanField(max_length=50, null=False)
     sale = models.BooleanField(max_length=50, null=False)
     user_id = models.CharField(max_length=50, null=False)
-    count = models.IntegerField(null=False)
+    description = models.TextField(null=True, default='')
+    available = models.BooleanField(null=False, default=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+class Booking(models.Model):
+    car_id = models.CharField(max_length=50, null=False)
+    user_id = models.CharField(max_length=50, null=False)
+    description = models.TextField(null=True, default='')
+    paid = models.BooleanField(null=False, default=False)
+    collected = models.BooleanField(null=False, default=False)
+    returned = models.BooleanField(null=False, default=False)
+    date_returned = models.DateTimeField(auto_now_add=False, null=True)
     created = models.DateTimeField(auto_now_add=True)

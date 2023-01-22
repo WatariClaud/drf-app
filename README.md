@@ -4,4 +4,4 @@ Future commits will have better functionality, just setting up the skeleton serv
 Works with postgres.
 
 ##### TODO:
-Improve authentication for custom user_model
+Improve search by model
