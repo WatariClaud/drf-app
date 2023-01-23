@@ -117,7 +117,7 @@ def search_by_model(request):
         }
         return Response(res, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     try:
-        car_result = Car.objects.filter(model=model_name).order_by('-id')
+        car_result = Car.objects.filter(model__icontains=model_name).order_by('-id')
         cars = CarSerializer_View(car_result, many=True)
         res = {
             "data": cars.data
