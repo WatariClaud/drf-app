@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import CarSerializer_Add, CarSerializer_View_Self, CarSerializer_View, UserSerializer_Authed
+from .serializers import CarSerializer_Add, CarSerializer_View_Self, CarSerializer_View, UserSerializer_Authed, CarSerializer_Update
 from base.models import Car
 
 @api_view(['POST'])
@@ -34,7 +34,6 @@ def add_car(request):
                     "hire_or_sale": "can be either 'hire' or 'sale'"
                 }
                 return Response(res, status=status.HTTP_409_CONFLICT)
-            count_of_model = Car.objects.filter(model=model).count()
             if hire_or_sale == 'sale':
                 sale = True
                 hire = False
@@ -119,8 +118,108 @@ def search_by_model(request):
     try:
         car_result = Car.objects.filter(model__icontains=model_name).order_by('-id')
         cars = CarSerializer_View(car_result, many=True)
+        count = car_result.count()
         res = {
+            "total_with_'" + model_name + "'_in_model_name": count,
             "data": cars.data
+        }
+        return Response(res, status=status.HTTP_200_OK)
+    except Exception as e:
+        res = {
+            "message": "an error occured",
+            "error": str(e)
+        }
+        return Response(res, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
+def update_car_details(request, car_id):
+    authenticated = TokenAuthentication().authenticate(request=request)
+    logged_in = authenticated[0]
+    user = UserSerializer_Authed(logged_in)
+    user_id = user.data.get('id')
+    model_name = request.data.get('model_name')
+    price = request.data.get('price')
+    description = request.data.get('description')
+    hire_or_sale = request.data.get('hire_or_sale')
+    available = request.data.get('available')
+    sale = False
+    hire = False
+    try:
+        res = {
+            "message": "invalid car id"
+        }
+        car_result: Car
+        if car_id.isdigit():
+            if not Car.objects.filter(id=car_id):
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                car_result = Car.objects.filter(id=car_id).get()
+        else:
+            if not Car.objects.filter(registration_number=car_id):
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                car_result = Car.objects.filter(registration_number=car_id).get()
+        car = CarSerializer_View(car_result)
+        car_model = car.data.get('model')
+        car_description = car.data.get('description')
+        car_price = car.data.get('price')
+        car_available = car.data.get('available')
+        car_hire = car.data.get('hire')
+        car_sale = car.data.get('sale')
+        car_user_id = car.data.get('user_id')
+        if car_user_id != str(user_id):
+            res = {
+                "message": "Unauthorized request"
+            }
+            return Response(res, status=status.HTTP_401_UNAUTHORIZED)
+        if not model_name and not price and not description and not available and not hire_or_sale:
+            res = {
+                "message": "Nothing to update"
+            }
+            return Response(res, status=status.HTTP_400_BAD_REQUEST)
+        if not model_name:
+            model_name = car_model
+        if not price:
+            price = car_price
+        if not description:
+            description = car_description
+        if available:
+            if not available == 'true' and not available == 'false':
+                res = {
+                    "available": "can be either 'true' or 'false'"
+                }
+                return Response(res, status=status.HTTP_409_CONFLICT)
+            if available == 'true':
+                available = True
+            else:
+                available = False
+        else:
+            available = car_available
+        if hire_or_sale:
+            if not hire_or_sale == 'sale' and not hire_or_sale == 'hire':
+                res = {
+                    "hire_or_sale": "can be either 'hire' or 'sale'"
+                }
+                return Response(res, status=status.HTTP_409_CONFLICT)
+            if hire_or_sale == 'sale':
+                sale = True
+                hire = False
+            else:
+                sale = False
+                hire = True
+        else:
+            hire = car_hire
+            sale = car_sale
+        car_result.model = model_name
+        car_result.price = price
+        car_result.description = description
+        car_result.available = available
+        car_result.hire = hire
+        car_result.sale = sale
+        car_result.save()
+        res = {
+            "message": "updated details successfully"
         }
         return Response(res, status=status.HTTP_200_OK)
     except Exception as e:

@@ -27,17 +27,22 @@ class UserSerializer_Searched(serializers.ModelSerializer):
 class CarSerializer_View_Self(serializers.ModelSerializer):
     class Meta:
         model = Car
-        fields = ['id', 'model', 'registration_number', 'hire', 'sale', 'description', 'available', 'created']
+        fields = ['id', 'model', 'registration_number', 'hire', 'sale', 'description', 'available', 'created', 'price']
        
 class CarSerializer_View(serializers.ModelSerializer):
     class Meta:
         model = Car
-        fields = ['id', 'user_id', 'model', 'registration_number', 'hire', 'sale', 'description', 'available', 'created']
+        fields = ['id', 'user_id', 'model', 'registration_number', 'hire', 'sale', 'description', 'available', 'created', 'price']
         
 class CarSerializer_Add(serializers.ModelSerializer):
     class Meta:
         model = Car
-        fields = ['model', 'registration_number']
+        fields = ['model', 'registration_number', 'price']
+        
+class CarSerializer_Update(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = ['model', 'price', 'description', 'availbale', 'hire', 'sale']
 
 class BookingSerializer_View(serializers.ModelSerializer):
     class Meta:
@@ -52,4 +57,9 @@ class BookingSerializer_Add(serializers.ModelSerializer):
 class BookingSerializer_Update(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        fields = ['id', 'paid', 'returned', 'date_returned']
+        fields = ['id', 'paid', 'returned']
+        
+class BookingSerializer_View(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        fields = '__all__'

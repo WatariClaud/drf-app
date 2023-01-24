@@ -141,13 +141,19 @@ def get_user(request):
     logged_in_user_id = user.data.get('id')
     user_id = request.GET.get('user_id', logged_in_user_id)
     try:
-        if not User.objects.filter(id=user_id):
-            res = {
-                "message": "invalid user id"
-            }
-            return Response(res, status=status.HTTP_400_BAD_REQUEST)
-        user_to_search = User.objects.filter(id=user_id).get()
-        search_result = UserSerializer_Searched(user_to_search)
+        res = {
+            "message": "invalid user id"
+        }
+        user_to_search: User
+        if user_id.isdigit():
+            if not User.objects.filter(id=user_id):
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
+            user_to_search = User.objects.filter(id=user_id)
+        else:
+            if not User.objects.filter(username__icontains=user_id):
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
+            user_to_search = User.objects.filter(username__icontains=user_id)
+        search_result = UserSerializer_Searched(user_to_search, many=True)
         if str(logged_in_user_id) == str(user_id):
             res = {
                 "data": user.data

@@ -18,6 +18,7 @@ class Car(models.Model):
     description = models.TextField(null=True, default='')
     available = models.BooleanField(null=False, default=True)
     created = models.DateTimeField(auto_now_add=True)
+    price = models.FloatField(null=False, default=0.00)
 
 class Booking(models.Model):
     car_id = models.CharField(max_length=50, null=False)
